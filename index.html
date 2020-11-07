@@ -1,10 +1,19 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>Loading...</title>
-    <link href="css/m-styles.min.css" rel="stylesheet" </head>
-
-    <body>
-        <button class="btn-small">Hello!</button>
-    </body>
+  <title>BrowserWindow</title>
+  <style>
+    h1 {
+      color: white;
+    }
+    </style>
+</head>
+<body>
+  <h1>Hello from your BrowserWindow!</h1>
+  <button>Close this window</button>
+  <script>
+    const button = document.querySelector('#close-btn')
+    button.addEventListener('click', () => window.moveTo(0,0))
+  </script>
+</body>
+</html>

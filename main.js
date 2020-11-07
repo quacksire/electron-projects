@@ -1,23 +1,45 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow, Menu } = require('electron')
-var isTransparent = true
-var frameTransparent = false
-function createWindow (t,f) {
+function createWindow () {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    width: 100,
-    height: 80,
+  const window = new BrowserWindow({
+    width: 500,
+    height: 500,
     name: "Groupme",
-    transparent: isTransparent,
-    frame: frameTransparent,
-    webPreferences: {
-      nodeIntegration: true
-    }
+    transparent: true
+  })
+  const window1 = new BrowserWindow({
+    width: 500,
+    height: 500,
+    name: "Groupme",
+    transparent: true
+  })
+  const window2 = new BrowserWindow({
+    width: 500,
+    height: 500,
+    name: "Groupme",
+    transparent: true
+  })
+  const window3 = new BrowserWindow({
+    width: 500,
+    height: 500,
+    name: "Groupme",
+    transparent: true
+  })
+  const window4 = new BrowserWindow({
+    width: 500,
+    height: 500,
+    name: "Groupme",
+    transparent: true
   })
 
   // and load the index.html of the app.
 
-  mainWindow.loadFile('index.html')
+  window.loadFile('index.html')
+  window1.loadFile('index.html')
+  window2.loadFile('index.html')
+  window3.loadFile('index.html')
+  window4.loadFile('index.html')
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
 }
@@ -25,6 +47,10 @@ function createWindow (t,f) {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(createWindow)
+for (var i = 0; i < 9; i++) {
+ console.log(i)
+ // more statements
+}
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
@@ -45,21 +71,15 @@ app.on('activate', function () {
 app.once('ready-to-show', () => {
   app.show()
 })
+app.e
 const template = [
     {
       label: 'Hello From Electron!',
       submenu: [
         {
-          label: 'Transparent Toggle',
+          label: 'Quit',
           click () {
-            app.hide()
-            if (isTransparent){
-              isTransparent = false
-            }else{
-              isTransparent = true
-            }
-            createWindow()
-            app.show()
+            app.close()
           }
         },
       ]
