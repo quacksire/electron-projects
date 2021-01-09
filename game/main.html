@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+<html encoding="utf-8">
 
 <head>
     <title>Trivia with a twist!</title>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
 </head>
 
 <body>
@@ -11,6 +14,29 @@
     <script>
         const button = document.querySelector('#close-btn')
         button.addEventListener('click', () => Game())
+    </script>
+    <script src="game.js"></script>
+    <script language="javascript" type="text/javascript">
+        function setup() {
+            // Create a request variable and assign a new XMLHttpRequest object to it.
+            var request = new XMLHttpRequest()
+
+            // Open a new connection, using the GET request on the URL endpoint
+            request.open('GET', 'https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple', true)
+            request.onload = function() {
+                    var data = JSON.parse(this.response)
+                    if (request.status >= 200) {
+                        console.log(data)
+                        document.write(data.results[1].question)
+                    } else {
+                        console.log('error')
+                    }
+                }
+                // Send request
+            request.send()
+        }
+
+        var
     </script>
 </body>
 
