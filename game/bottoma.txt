@@ -1,0 +1,4 @@
+</button><script>Game.correct();</script>
+</body>
+
+</html>

@@ -20,19 +20,20 @@ function setup(a) {
 }
 var setupMessage = "Called API"
 var question = setup(setupMessage)
-game(question)
 var points = 0
 var lives = 5
 var questionNum = -1
+var fileName = location.href.split("/").slice(-1)
+alert(location)
 
 game(question, questionNum, lives, points)
 
 function game(question, questionNum, lives, points) {
     while (lives > 0 || questionNum > 10) {
         var questionNum = questionNum + 1
-        if (Document.name "q.html") {
-            document.write(question[questionNum].question)
-        } else if (Document.name === "a.html") {
+        if (fileName === "q.html") {
+            File.write.write(question[questionNum].question)
+        } else if (fileName === "a.html") {
             document.write(question[questionNum].correct_answer)
         }
     }
