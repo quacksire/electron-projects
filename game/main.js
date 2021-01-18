@@ -1,25 +1,24 @@
 //------------------ Do not remove -----------------//
-
 // Modules to control application life and create native browser window
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const { app, BrowserWindow, Menu, ipcRenderer, ipcMain, fs } = require('electron')
+const Store = require('electron-store');
 var remote = require('electron').remote;
-//var fs = require('fs');
-//var electronDialog = remote. //dialog;
 const { promisify } = require('util');
-//const path = require('path');
-//const readFile = promisify(fs.readFile);
 ipcMain.handle('lstat', async(event, filename) => await fs.promises.lstat(filename));
+const store = new Store()
 
 //-----Default Settings-------------//
 
 var points = 0
 var lives = 3
-    //var shuffle = false
+
+//var shuffle = false
 
 //-----------Files-------------//
-let topContent = fs.readFile('top.txt')
-let bottomAContent = fs.readFile('bottoma.txt')
-let bottomQContent = fs.readFile('bottomq.txt')
+store.set('topContent', '<!DOCTYPE html><html><body><button')
+store.set('topAContent', ' type="button" onclick="javascript:Game.correct();>')
+store.set('bottomContent', '</button></body></html>')
 
 //------------------ Electron Setup -----------------//
 
@@ -30,9 +29,10 @@ function createMainWindow() {
         name: "Game",
         transparent: false
     })
+    window.loadFile('main.html')
 }
 
-function createQAnswers(questionNum) {
+function createQAnswers(action) {
     // Create the browser window.
     const window = new BrowserWindow({
         width: 500,
@@ -46,32 +46,76 @@ function createQAnswers(questionNum) {
         name: "b",
         transparent: true
     })
-    window.loadFile('q.html')
-    window1.loadFile('a.html')
-        // Open the DevTools.
-        // mainWindow.webContents.openDevTools()
+    if (action === "open") {
+        window.loadFile('q.html')
+        window1.loadFile('a.html')
+    } else if (action === "close") {
+        window.close()
+        window1.close()
+    } else {
+        console.log("ERROR: No action passed to createQAnswers(); Availible actions are ''open'' or ''close''")
+    }
+    // Open the DevTools.
+    // mainWindow.webContents.openDevTools()
 }
+//------------------ Game Functions ------------------//
+function game(question, questionNum, lives, points, correctA, time) {
+    while (lives > 0 || questionNum > 10) {
+        points += 10
+        fs.writeFile('a.html', store.get('topContent') + store.get('topAContent') + question[questionNum].question + store.get('bottomContent'), function(err) {
+            if (err) throw err;
+            console.log('Replaced a.html!');
+        });
+
+        fs.writeFile('q.html', store.get('topContent') + question[questionNum].question + store.get('bottomContent'), function(err) {
+            if (err) throw err;
+            console.log('Replaced q.html!');
+        });
+        createQAnswers("close")
+        createQAnswers("open")
+        while (correctA === false) { time = time + 1 }
+    }
+}
+
+function setupQuestions() {
+    // Create a request variable and assign a new XMLHttpRequest object to it.
+    var request = new XMLHttpRequest()
+    var data
+        // Open a new connection, using the GET request on the URL endpoint
+    request.open('GET', 'https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple', true)
+    request.onload = function(data) {
+            data = JSON.parse(this.response)
+            if (request.status >= 200) {
+                console.log(data)
+                document.write(data.results[1].question)
+                console.log("Request code" + request.status)
+            } else {
+                console.log("ERROR: http get failed")
+            }
+            return data
+        }
+        // Send request
+    request.send()
+    return request
+}
+
+
+//------------------ Elctron Methods ------------------//
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(createMainWindow())
-    // Quit when all windows are closed, except on macOS. There, it's common
-    // for applications and their menu bar to stay active until the user quits
-    // explicitly with Cmd + Q.
-    /*
-    app.on('window-all-closed', function () {
-      if (process.platform !== 'darwin') {
-        app.quit()
-      }
-    })
-    */
+app.whenReady().then(() => {
+    createMainWindow()
+})
 app.on('activate', function() {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) {
-        createQAnswers()
+        createMainWindow()
     }
 })
+
 app.once('ready-to-show', () => {
     app.show()
 })
@@ -79,49 +123,13 @@ app.once('ready-to-show', () => {
 
 //------------------ Game Setup -----------------//
 
+var question = setupQuestions()
+var questionNum = -1
+var time
 
-// Triggers
+// HTML => Electron Triggers
 var correctA = false
 exports.correct = () => correctA = true
 exports.incorrect = () => correctA = false
-exports.next = () => false
-
-function setupQuestions() {
-    // Create a request variable and assign a new XMLHttpRequest object to it.
-    var request = new XMLHttpRequest()
-
-    // Open a new connection, using the GET request on the URL endpoint
-    request.open('GET', 'https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple', true)
-    request.onload = function() {
-            var data = JSON.parse(this.response)
-            if (request.status >= 200) {
-                console.log(data)
-                document.write(data.results[1].question)
-            } else {
-                console.log('error')
-            }
-        }
-        // Send request
-    request.send()
-    return data.results
-}
-var setupMessage = "Called API"
-var question = setupQuestions()
-var questionNum = -1
-
-game(question, questionNum, lives, points)
-
-function game(question, questionNum, lives, points, correctA) {
-    while (lives > 0 || questionNum > 10) {
-        fs.writeFile('a.html', topContent + question[questionNum].correct_answer + bottomAContent, function(err) {
-            if (err) throw err;
-            console.log('Replaced a.html!');
-        });
-
-        fs.writeFile('q.html', topContent + question[questionNum].question + bottomAContent, function(err) {
-            if (err) throw err;
-            console.log('Replaced q.html!');
-        });
-        //while (correctA === false) {; }
-    }
-}
+exports.next = () => correctA = false
+exports.start = () => game(question, questionNum, lives, points, correctA, time)

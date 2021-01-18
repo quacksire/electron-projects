@@ -9,7 +9,10 @@
     "scripts": {
         "start": "electron ."
     },
-    "dependencies": {},
+    "dependencies": {
+        "electron-store": "^6.0.1",
+        "xmlhttprequest": "^1.8.0"
+    },
     "devDependencies": {
         "electron": "11.0.0-beta.13"
     }
