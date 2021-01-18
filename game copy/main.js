@@ -1,27 +1,14 @@
-//------------------ Do not remove -----------------//
-
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, Menu, ipcRenderer, ipcMain, fs } = require('electron')
-var remote = require('electron').remote;
-//var fs = require('fs');
-//var electronDialog = remote. //dialog;
-const { promisify } = require('util');
-//const path = require('path');
-//const readFile = promisify(fs.readFile);
-ipcMain.handle('lstat', async(event, filename) => await fs.promises.lstat(filename));
+const { app, BrowserWindow, Menu } = require('electron')
 
 //-----Default Settings-------------//
 
 var points = 0
 var lives = 3
-    //var shuffle = false
+var shuffle = false
 
-//-----------Files-------------//
-let topContent = fs.readFile('top.txt')
-let bottomAContent = fs.readFile('bottoma.txt')
-let bottomQContent = fs.readFile('bottomq.txt')
+//---------------------------------//
 
-//------------------ Electron Setup -----------------//
 
 function createMainWindow() {
     const window = new BrowserWindow({
@@ -51,6 +38,13 @@ function createQAnswers(questionNum) {
         // Open the DevTools.
         // mainWindow.webContents.openDevTools()
 }
+
+
+
+
+
+
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -75,16 +69,19 @@ app.on('activate', function() {
 app.once('ready-to-show', () => {
     app.show()
 })
+app.e
+const template = [{
+    label: 'Hello From Electron!',
+    submenu: [{
+        label: 'Quit',
+        click() {
+            app.close()
+        }
+    }, ]
+}]
+const menu = Menu.buildFromTemplate(template)
+Menu.setApplicationMenu(menu)
 
-
-//------------------ Game Setup -----------------//
-
-
-// Triggers
-var correctA = false
-exports.correct = () => correctA = true
-exports.incorrect = () => correctA = false
-exports.next = () => false
 
 function setupQuestions() {
     // Create a request variable and assign a new XMLHttpRequest object to it.
@@ -107,21 +104,23 @@ function setupQuestions() {
 }
 var setupMessage = "Called API"
 var question = setupQuestions()
+var points = 0
+var lives = 5
 var questionNum = -1
+var fileName = location.href.split("/").slice(-1)
+alert(location)
 
 game(question, questionNum, lives, points)
 
-function game(question, questionNum, lives, points, correctA) {
+function game(question, questionNum, lives, points) {
     while (lives > 0 || questionNum > 10) {
-        fs.writeFile('a.html', topContent + question[questionNum].correct_answer + bottomAContent, function(err) {
-            if (err) throw err;
-            console.log('Replaced a.html!');
-        });
-
-        fs.writeFile('q.html', topContent + question[questionNum].question + bottomAContent, function(err) {
-            if (err) throw err;
-            console.log('Replaced q.html!');
-        });
-        //while (correctA === false) {; }
+        var questionNum = questionNum + 1
+        if (fileName === "q.html") {
+            document.write(question[questionNum].question)
+        } else if (fileName === "a.html") {
+            document.write(question[questionNum].correct_answer)
+        }
     }
 }
+// In this file you can include the rest of your app's specific main process
+// code. You can also put them in separate files and require them here.

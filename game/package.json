@@ -1,16 +1,16 @@
 {
-  "name": "game",
-  "productName": "game",
-  "description": "My Electron application description",
-  "keywords": [],
-  "main": "./main.js",
-  "version": "1.0.0",
-  "author": "sam",
-  "scripts": {
-    "start": "electron ."
-  },
-  "dependencies": {},
-  "devDependencies": {
-    "electron": "11.0.0-beta.13"
-  }
+    "name": "game",
+    "productName": "game",
+    "description": "My Electron application description",
+    "keywords": [],
+    "main": "./main.js",
+    "version": "1.0.0",
+    "author": "sam",
+    "scripts": {
+        "start": "electron ."
+    },
+    "dependencies": {},
+    "devDependencies": {
+        "electron": "11.0.0-beta.13"
+    }
 }

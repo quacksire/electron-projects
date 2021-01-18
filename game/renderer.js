@@ -6,3 +6,4 @@ document.getElementById("body").style.property.backgroundColor = fff0
 
 const { remote } = require('electron');
 const Game = remote.require('./main.js');
+let fs = await window.lstat(filename);

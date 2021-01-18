@@ -1,0 +1,1 @@
+window.lstat = function(filename) { return ipcRenderer.invoke('lstat', filename); };
