@@ -1,14 +1,19 @@
 //------------------ Do not remove -----------------//
 // Modules to control application life and create native browser window
-var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-const { app, BrowserWindow, Menu, ipcRenderer, ipcMain, fs } = require('electron')
-const Store = require('electron-store');
-var remote = require('electron').remote;
-const { promisify } = require('util');
-ipcMain.handle('lstat', async(event, filename) => await fs.promises.lstat(filename));
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest
+const { app, BrowserWindow, Menu, ipcRenderer, ipcMain, ClientRequest } = require('electron')
+const Store = require('electron-store')
+var remote = require('electron').remote
+const { promisify } = require('util')
+ipcMain.handle('lstat', async(event, filename) => await fs.promises.lstat(filename))
 const store = new Store()
-
-//-----Default Settings-------------//
+const storage = require('electron-storage')
+const jsom = require('electron-json-storage')
+const os = require('os')
+const fs = require('fs')
+const net = require('net')
+const http = require('http')
+    //-----Default Settings-------------//
 
 var points = 0
 var lives = 3
@@ -78,27 +83,11 @@ function game(question, questionNum, lives, points, correctA, time) {
 }
 
 function setupQuestions() {
-    // Create a request variable and assign a new XMLHttpRequest object to it.
-    var request = new XMLHttpRequest()
-    var data
-        // Open a new connection, using the GET request on the URL endpoint
-    request.open('GET', 'https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple', true)
-    request.onload = function(data) {
-            data = JSON.parse(this.response)
-            if (request.status >= 200) {
-                console.log(data)
-                document.write(data.results[1].question)
-                console.log("Request code" + request.status)
-            } else {
-                console.log("ERROR: http get failed")
-            }
-            return data
-        }
-        // Send request
-    request.send()
-    return request
+    var data = http.request("http://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple")
+        //("https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple")
+    console.log(data)
+    return data
 }
-
 
 //------------------ Elctron Methods ------------------//
 
@@ -107,7 +96,7 @@ function setupQuestions() {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
     createMainWindow()
-})
+});
 app.on('activate', function() {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
@@ -129,7 +118,7 @@ var time
 
 // HTML => Electron Triggers
 var correctA = false
-exports.correct = () => correctA = true
-exports.incorrect = () => correctA = false
-exports.next = () => correctA = false
+exports.correct = () => correctA = true;
+exports.incorrect = () => correctA = false;
+exports.next = () => correctA = false;
 exports.start = () => game(question, questionNum, lives, points, correctA, time)
