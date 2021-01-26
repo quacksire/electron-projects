@@ -4,6 +4,12 @@
 
 document.getElementById("body").style.property.backgroundColor = fff0
 
+const { ipcRenderer } = require('electron');
+
+document
+    .querySelector('start')
+    .addEventListener('click', () => {
+        ipcRenderer.send('start');
+    });
 const { remote } = require('electron');
-const Game = remote.require('./main.js');
-let fs = await window.lstat(filename);
+const main = remote.require('./main.js');
