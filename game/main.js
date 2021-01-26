@@ -33,7 +33,7 @@ store.set('bottomContent', '</button></body></html>')
 function getQuestions() {
     //http://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple
     //var get = document.getElementById('get');
-
+    var q
     const request = net.request({
         method: 'GET',
         protocol: 'http:',
@@ -47,6 +47,7 @@ function getQuestions() {
 
         response.on('data', (chunk) => {
             console.log(`BODY: ${chunk}`)
+            q = chunk
         });
     });
     request.on('finish', () => {
@@ -63,7 +64,8 @@ function getQuestions() {
     });
     request.setHeader('Content-Type', 'application/json');
     request.end();
-    return JSON.stringify(response.results)
+    request.
+    return JSON.stringify(request.response.results)
 }
 
 function mainWindow(action) {
@@ -145,6 +147,7 @@ return data
 app.whenReady().then(() => {
     mainWindow("open")
     const question = getQuestions()
+    console.log("\n\n\n\n\n\n\n\n\n" + question.results)
 });
 app.on('activate', function() {
     // On OS X it's common to re-create a window in the app when the
@@ -171,9 +174,10 @@ exports.correct = () => correctA = true;
 exports.incorrect = () => correctA = false;
 exports.next = () => correctA = false;
 exports.start = () => mainWindow("close") //game(question, questionNum, lives, points, correctA, time)
-    //ipcMain.on('start', () => console.log('start \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n aaaaaaaaaaaa'))
-ipcMain.on('start', (event, arg) => {
-    if (arg === true) {
-        console.log("Hi!")
-    } else {}
-});
+ipcMain.on('start', () => console.log('start \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n aaaaaaaaaaaa'))
+    /*ipcMain.on('start', (event, arg) => {
+        if (arg === true) {
+            console.log("Hi!")
+        } else {}
+    });
+    */
